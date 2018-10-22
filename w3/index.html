@@ -391,7 +391,7 @@ function addCar()
        var url = "<a href=\"javascript: void();\" onclick=\"deleteItem(" + tweet.ProductID + ")\">Borrar</a>";
        
 
-       cellCantidad.innerHTML ='<img onclick = disminuir(tweet.ProductID) src= \'img/minus.png\'>' + tweet.Cantidad + '<img onclick = \'add('+tweet.ProductID+')\' src=\'img/plus.png\'>';
+       cellCantidad.innerHTML ='<img onclick = \'disminuir('+tweet.ProductID+')\' src= \'img/minus.png\'>' + tweet.Cantidad + '<img onclick = \'add('+tweet.ProductID+')\' src=\'img/plus.png\'>';
       //  var valor=tweet.Cantidad;
       //  console.log(valor);
        cellProducto.innerHTML = tweet.ProductName;
@@ -450,25 +450,70 @@ function addCar()
 //  }
 
 function add(item){
-  for (var c = currentUserShoppingCart.length; c--;){
-    var it = currentUserShoppingCart[c];
-    console.log("La cantidas 1 es "+ it.Cantidad);
-
-     if (it.ProductID == item)
-     {
-      console.log("El it product id es " + it.ProductID);
-      console.log("El item es "+ item);
-      // it.Cantidad++;
-      // addCar();
-      // console.log(it.Cantidad);
-      // document.getElementById("#tableProducts").rows[c].cells[0].innerHTML=it.Cantidad;
-      
-      console.log("La cantidad 2 es "+ it.Cantidad);
-      addCar();
-      
-     }
-  }
+  try
+	{
+		for (var c = currentUserShoppingCart.length; c--;) {
+			var it = currentUserShoppingCart[c];
+			if (it.ProductID == item) {
+        // coidgo viejo
+				var Cantidad =parseFloat(currentUserShoppingCart[c].Cantidad) +1;
+				currentUserShoppingCart[c].Cantidad = Cantidad;
+				var descuento = currentUserShoppingCart[c].Descuento;
+				var importe = 0;
+        importe = miDescuento * Cantidad;
+        currentUserShoppingCart[c].Importe = Math.round(importe * 100) / 100;
+			}
+		}
+		sessionStorage.setObject('UserShoppingCart', currentUserShoppingCart);
+		showScar();
+	}
+	catch (err) {
+		var msgError = "Ocurrio un error en la página.\n\n";
+		msgError += "Descripción: " + err + "\n\n";
+		msgError += "Click OK para continuar.\n\n";
+		document.getElementById('Cantidad').value = '';
+		document.getElementById('Cantidad').focus();
+		alert(msgError);
+	}
 }
+
+function disminuir(item){
+  try
+	{
+		for (var c = currentUserShoppingCart.length; c--;) {
+			var it = currentUserShoppingCart[c];
+			if (it.ProductID == item) {
+
+        // coidgo viejo
+        if(currentUserShoppingCart[c].Cantidad<=0){
+          throw(err);
+        }
+        else{
+            var Cantidad =parseFloat(currentUserShoppingCart[c].Cantidad) -1;
+          currentUserShoppingCart[c].Cantidad = Cantidad;
+          var descuento = currentUserShoppingCart[c].Descuento;
+          var importe = 0;
+          importe = miDescuento * Cantidad;
+          currentUserShoppingCart[c].Importe = Math.round(importe * 100) / 100;
+          }
+			
+			}
+		}
+		sessionStorage.setObject('UserShoppingCart', currentUserShoppingCart);
+		showScar();
+	}
+	catch (err) {
+		var msgError = "Ocurrio un error en la página.\n\n";
+		msgError += "Descripción: " + err + "\n\n";
+		msgError += "Click OK para continuar.\n\n";
+		document.getElementById('Cantidad').value = '';
+		document.getElementById('Cantidad').focus();
+		alert(msgError);
+	}
+}
+
+
+  
 
 
 
